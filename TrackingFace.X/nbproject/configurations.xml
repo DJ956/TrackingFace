@@ -11,6 +11,8 @@
         <itemPath>mcc_generated_files/mcc.h</itemPath>
         <itemPath>mcc_generated_files/pin_manager.h</itemPath>
       </logicalFolder>
+      <itemPath>i2c.h</itemPath>
+      <itemPath>PCA9685.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -27,6 +29,8 @@
         <itemPath>mcc_generated_files/pin_manager.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
+      <itemPath>i2c.c</itemPath>
+      <itemPath>PCA9685.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -45,7 +49,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>2.32</languageToolchainVersion>
+        <languageToolchainVersion>2.30</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>

@@ -1,25 +1,23 @@
 Version 4.0 HI-TECH Software Intermediate Code
-"78 mcc_generated_files/pin_manager.h
-[; ;mcc_generated_files/pin_manager.h: 78: void PIN_MANAGER_Initialize (void);
-[v _PIN_MANAGER_Initialize `(v ~T0 @X0 0 ef ]
-"82 mcc_generated_files/mcc.h
-[; ;mcc_generated_files/mcc.h: 82: void OSCILLATOR_Initialize(void);
-[v _OSCILLATOR_Initialize `(v ~T0 @X0 0 ef ]
-"94
-[; ;mcc_generated_files/mcc.h: 94: void WDT_Initialize(void);
-[v _WDT_Initialize `(v ~T0 @X0 0 ef ]
-"1707 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
-[; ;C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h: 1707: extern volatile unsigned char OSCCON __attribute__((address(0x099)));
-[v _OSCCON `Vuc ~T0 @X0 0 e@153 ]
-"1649
-[; ;C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h: 1649: extern volatile unsigned char OSCTUNE __attribute__((address(0x098)));
-[v _OSCTUNE `Vuc ~T0 @X0 0 e@152 ]
-"2431
-[; ;C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h: 2431: extern volatile unsigned char BORCON __attribute__((address(0x116)));
-[v _BORCON `Vuc ~T0 @X0 0 e@278 ]
-"1590
-[; ;C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h: 1590: extern volatile unsigned char WDTCON __attribute__((address(0x097)));
-[v _WDTCON `Vuc ~T0 @X0 0 e@151 ]
+"7 ./i2c.h
+[; ;./i2c.h: 7: void i2c_start();
+[v _i2c_start `(v ~T0 @X0 0 e? ]
+"10
+[; ;./i2c.h: 10: void i2c_write(uint8_t data);
+[v _i2c_write `(v ~T0 @X0 0 ef1`uc ]
+"8
+[; ;./i2c.h: 8: void i2c_stop();
+[v _i2c_stop `(v ~T0 @X0 0 e? ]
+"9
+[; ;./i2c.h: 9: void i2c_repeated_start();
+[v _i2c_repeated_start `(v ~T0 @X0 0 e? ]
+"11
+[; ;./i2c.h: 11: uint8_t i2c_read(uint8_t ack);
+[v _i2c_read `(uc ~T0 @X0 0 ef1`uc ]
+[v F183 `(v ~T0 @X0 1 tf1`ul ]
+"12 C:\Program Files\Microchip\xc8\v2.30\pic\include\builtins.h
+[v __delay `JF183 ~T0 @X0 0 e ]
+[p i __delay ]
 "55 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h
 [; ;C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h: 55: __asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
@@ -494,60 +492,216 @@ Version 4.0 HI-TECH Software Intermediate Code
 "6749
 [; ;C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1827.h: 6749: __asm("TOSH equ 0FEFh");
 [; <" TOSH equ 0FEFh ;# ">
-"50 mcc_generated_files/mcc.c
-[; ;mcc_generated_files/mcc.c: 50: void SYSTEM_Initialize(void)
-[v _SYSTEM_Initialize `(v ~T0 @X0 1 ef ]
-"51
-[; ;mcc_generated_files/mcc.c: 51: {
+"16 PCA9685.c
+[; ;PCA9685.c: 16: void _write(uint8_t addr, uint8_t d){
+[v __write `(v ~T0 @X0 1 ef2`uc`uc ]
 {
-[e :U _SYSTEM_Initialize ]
+[e :U __write ]
+[v _addr `uc ~T0 @X0 1 r1 ]
+[v _d `uc ~T0 @X0 1 r2 ]
 [f ]
-"53
-[; ;mcc_generated_files/mcc.c: 53:     PIN_MANAGER_Initialize();
-[e ( _PIN_MANAGER_Initialize ..  ]
-"54
-[; ;mcc_generated_files/mcc.c: 54:     OSCILLATOR_Initialize();
-[e ( _OSCILLATOR_Initialize ..  ]
-"55
-[; ;mcc_generated_files/mcc.c: 55:     WDT_Initialize();
-[e ( _WDT_Initialize ..  ]
-"56
-[; ;mcc_generated_files/mcc.c: 56: }
+"17
+[; ;PCA9685.c: 17:     i2c_start();
+[e ( _i2c_start ..  ]
+"18
+[; ;PCA9685.c: 18:     i2c_write(0x80);
+[e ( _i2c_write (1 -> -> 128 `i `uc ]
+"19
+[; ;PCA9685.c: 19:     i2c_write(addr);
+[e ( _i2c_write (1 _addr ]
+"20
+[; ;PCA9685.c: 20:     i2c_write(d);
+[e ( _i2c_write (1 _d ]
+"21
+[; ;PCA9685.c: 21:     i2c_stop();
+[e ( _i2c_stop ..  ]
+"22
+[; ;PCA9685.c: 22: }
 [e :UE 354 ]
 }
-"58
-[; ;mcc_generated_files/mcc.c: 58: void OSCILLATOR_Initialize(void)
-[v _OSCILLATOR_Initialize `(v ~T0 @X0 1 ef ]
-"59
-[; ;mcc_generated_files/mcc.c: 59: {
+"28
+[; ;PCA9685.c: 28: uint8_t _read(uint8_t addr){
+[v __read `(uc ~T0 @X0 1 ef1`uc ]
 {
-[e :U _OSCILLATOR_Initialize ]
+[e :U __read ]
+[v _addr `uc ~T0 @X0 1 r1 ]
 [f ]
-"61
-[; ;mcc_generated_files/mcc.c: 61:     OSCCON = 0x70;
-[e = _OSCCON -> -> 112 `i `uc ]
-"63
-[; ;mcc_generated_files/mcc.c: 63:     OSCTUNE = 0x00;
-[e = _OSCTUNE -> -> 0 `i `uc ]
-"65
-[; ;mcc_generated_files/mcc.c: 65:     BORCON = 0x00;
-[e = _BORCON -> -> 0 `i `uc ]
-"66
-[; ;mcc_generated_files/mcc.c: 66: }
+"29
+[; ;PCA9685.c: 29:     uint8_t data;
+[v _data `uc ~T0 @X0 1 a ]
+"30
+[; ;PCA9685.c: 30:     i2c_start();
+[e ( _i2c_start ..  ]
+"31
+[; ;PCA9685.c: 31:     i2c_write(0x80);
+[e ( _i2c_write (1 -> -> 128 `i `uc ]
+"32
+[; ;PCA9685.c: 32:     i2c_write(addr);
+[e ( _i2c_write (1 _addr ]
+"34
+[; ;PCA9685.c: 34:     i2c_repeated_start();
+[e ( _i2c_repeated_start ..  ]
+"36
+[; ;PCA9685.c: 36:     i2c_write(0x80 | 0x01);
+[e ( _i2c_write (1 -> | -> 128 `i -> 1 `i `uc ]
+"37
+[; ;PCA9685.c: 37:     data = i2c_read(0x0 | 0x01);
+[e = _data ( _i2c_read (1 -> | -> 0 `i -> 1 `i `uc ]
+"38
+[; ;PCA9685.c: 38:     i2c_stop();
+[e ( _i2c_stop ..  ]
+"40
+[; ;PCA9685.c: 40:     return data;
+[e ) _data ]
+[e $UE 355  ]
+"41
+[; ;PCA9685.c: 41: }
 [e :UE 355 ]
 }
-"68
-[; ;mcc_generated_files/mcc.c: 68: void WDT_Initialize(void)
-[v _WDT_Initialize `(v ~T0 @X0 1 ef ]
-"69
-[; ;mcc_generated_files/mcc.c: 69: {
+"46
+[; ;PCA9685.c: 46: void init(){
+[v _init `(v ~T0 @X0 1 ef ]
 {
-[e :U _WDT_Initialize ]
+[e :U _init ]
 [f ]
-"71
-[; ;mcc_generated_files/mcc.c: 71:     WDTCON = 0x16;
-[e = _WDTCON -> -> 22 `i `uc ]
-"72
-[; ;mcc_generated_files/mcc.c: 72: }
+"47
+[; ;PCA9685.c: 47:     i2c_start();
+[e ( _i2c_start ..  ]
+"48
+[; ;PCA9685.c: 48:     i2c_write(0x80);
+[e ( _i2c_write (1 -> -> 128 `i `uc ]
+"50
+[; ;PCA9685.c: 50:     i2c_write(0x0);
+[e ( _i2c_write (1 -> -> 0 `i `uc ]
+"51
+[; ;PCA9685.c: 51:     i2c_write(0x0);
+[e ( _i2c_write (1 -> -> 0 `i `uc ]
+"53
+[; ;PCA9685.c: 53:     i2c_stop();
+[e ( _i2c_stop ..  ]
+"54
+[; ;PCA9685.c: 54: }
 [e :UE 356 ]
+}
+"62
+[; ;PCA9685.c: 62: void set_pwm(uint8_t num, uint16_t on, uint16_t off){
+[v _set_pwm `(v ~T0 @X0 1 ef3`uc`us`us ]
+{
+[e :U _set_pwm ]
+[v _num `uc ~T0 @X0 1 r1 ]
+[v _on `us ~T0 @X0 1 r2 ]
+[v _off `us ~T0 @X0 1 r3 ]
+[f ]
+"63
+[; ;PCA9685.c: 63:     i2c_start();
+[e ( _i2c_start ..  ]
+"64
+[; ;PCA9685.c: 64:     i2c_write(0x80);
+[e ( _i2c_write (1 -> -> 128 `i `uc ]
+"65
+[; ;PCA9685.c: 65:     i2c_write(0x06 + 4 * num);
+[e ( _i2c_write (1 -> + -> 6 `i * -> 4 `i -> _num `i `uc ]
+"66
+[; ;PCA9685.c: 66:     i2c_write(on);
+[e ( _i2c_write (1 -> _on `uc ]
+"67
+[; ;PCA9685.c: 67:     i2c_write(on >> 8);
+[e ( _i2c_write (1 -> >> -> _on `ui -> 8 `i `uc ]
+"68
+[; ;PCA9685.c: 68:     i2c_write(off);
+[e ( _i2c_write (1 -> _off `uc ]
+"69
+[; ;PCA9685.c: 69:     i2c_write(off >> 8);
+[e ( _i2c_write (1 -> >> -> _off `ui -> 8 `i `uc ]
+"70
+[; ;PCA9685.c: 70:     i2c_stop();
+[e ( _i2c_stop ..  ]
+"71
+[; ;PCA9685.c: 71: }
+[e :UE 357 ]
+}
+"77
+[; ;PCA9685.c: 77: void set_pwm_freq(uint16_t freq){
+[v _set_pwm_freq `(v ~T0 @X0 1 ef1`us ]
+{
+[e :U _set_pwm_freq ]
+[v _freq `us ~T0 @X0 1 r1 ]
+[f ]
+"78
+[; ;PCA9685.c: 78:     uint16_t prescaleval = 6103;
+[v _prescaleval `us ~T0 @X0 1 a ]
+[e = _prescaleval -> -> 6103 `i `us ]
+"79
+[; ;PCA9685.c: 79:     prescaleval /= freq;
+[e =/ _prescaleval -> _freq `ui ]
+"80
+[; ;PCA9685.c: 80:     prescaleval -= 1;
+[e =- _prescaleval -> -> 1 `i `us ]
+"82
+[; ;PCA9685.c: 82:     uint8_t prescale = (uint8_t)prescaleval;
+[v _prescale `uc ~T0 @X0 1 a ]
+[e = _prescale -> _prescaleval `uc ]
+"83
+[; ;PCA9685.c: 83:     uint8_t oldreg = _read(0x0);
+[v _oldreg `uc ~T0 @X0 1 a ]
+[e = _oldreg ( __read (1 -> -> 0 `i `uc ]
+"84
+[; ;PCA9685.c: 84:     uint8_t newreg = (oldreg & 0x7F) | 0x10;
+[v _newreg `uc ~T0 @X0 1 a ]
+[e = _newreg -> | & -> _oldreg `i -> 127 `i -> 16 `i `uc ]
+"85
+[; ;PCA9685.c: 85:     _write(0x0, newreg);
+[e ( __write (2 , -> -> 0 `i `uc _newreg ]
+"86
+[; ;PCA9685.c: 86:     _write(0xFE, prescale);
+[e ( __write (2 , -> -> 254 `i `uc _prescale ]
+"87
+[; ;PCA9685.c: 87:     _write(0x0, oldreg);
+[e ( __write (2 , -> -> 0 `i `uc _oldreg ]
+"88
+[; ;PCA9685.c: 88:     _delay((unsigned long)((5)*(8000000/4000.0)));
+[e ( __delay (1 -> * -> -> 5 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
+"89
+[; ;PCA9685.c: 89:     _write(0x0, oldreg | 0xA1);
+[e ( __write (2 , -> -> 0 `i `uc -> | -> _oldreg `i -> 161 `i `uc ]
+"91
+[; ;PCA9685.c: 91: }
+[e :UE 358 ]
+}
+"94
+[; ;PCA9685.c: 94: uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max){
+[v _map `(us ~T0 @X0 1 ef5`us`us`us`us`us ]
+{
+[e :U _map ]
+[v _x `us ~T0 @X0 1 r1 ]
+[v _in_min `us ~T0 @X0 1 r2 ]
+[v _in_max `us ~T0 @X0 1 r3 ]
+[v _out_min `us ~T0 @X0 1 r4 ]
+[v _out_max `us ~T0 @X0 1 r5 ]
+[f ]
+"95
+[; ;PCA9685.c: 95:     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+[e ) -> + / * - -> _x `ui -> _in_min `ui - -> _out_max `ui -> _out_min `ui - -> _in_max `ui -> _in_min `ui -> _out_min `ui `us ]
+[e $UE 359  ]
+"96
+[; ;PCA9685.c: 96: }
+[e :UE 359 ]
+}
+"103
+[; ;PCA9685.c: 103: void servo_write(uint8_t ch, uint16_t ang){
+[v _servo_write `(v ~T0 @X0 1 ef2`uc`us ]
+{
+[e :U _servo_write ]
+[v _ch `uc ~T0 @X0 1 r1 ]
+[v _ang `us ~T0 @X0 1 r2 ]
+[f ]
+"104
+[; ;PCA9685.c: 104:     ang = map(ang, 0, 180, 150, 500);
+[e = _ang ( _map (4 , , , , _ang -> -> 0 `i `us -> -> 180 `i `us -> -> 150 `i `us -> -> 500 `i `us ]
+"105
+[; ;PCA9685.c: 105:     set_pwm(ch, 0, ang);
+[e ( _set_pwm (3 , , _ch -> -> 0 `i `us _ang ]
+"106
+[; ;PCA9685.c: 106: }
+[e :UE 360 ]
 }

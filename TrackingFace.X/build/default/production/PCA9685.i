@@ -1,4 +1,4 @@
-# 1 "main.c"
+# 1 "PCA9685.c"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 288 "<built-in>" 3
@@ -6,10 +6,7 @@
 # 1 "<built-in>" 2
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\language_support.h" 1 3
 # 2 "<built-in>" 2
-# 1 "main.c" 2
-
-# 1 "./mcc_generated_files/mcc.h" 1
-# 49 "./mcc_generated_files/mcc.h"
+# 1 "PCA9685.c" 2
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\xc.h" 1 3
 # 18 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\xc.h" 3
 extern const char __xc8_OPTIM_SPEED;
@@ -4331,63 +4328,21 @@ extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 28 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\xc.h" 2 3
-# 49 "./mcc_generated_files/mcc.h" 2
+# 1 "PCA9685.c" 2
 
-# 1 "./mcc_generated_files/device_config.h" 1
-# 50 "./mcc_generated_files/mcc.h" 2
-
-# 1 "./mcc_generated_files/pin_manager.h" 1
-# 78 "./mcc_generated_files/pin_manager.h"
-void PIN_MANAGER_Initialize (void);
-# 90 "./mcc_generated_files/pin_manager.h"
-void PIN_MANAGER_IOC(void);
-# 51 "./mcc_generated_files/mcc.h" 2
-
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\c99\\stdbool.h" 1 3
-# 53 "./mcc_generated_files/mcc.h" 2
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\c99\\conio.h" 1 3
+# 1 "./i2c.h" 1
 
 
 
 
 
-
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\c99\\errno.h" 1 3
-# 12 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\c99\\errno.h" 3
-extern int errno;
-# 8 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\c99\\conio.h" 2 3
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\__null.h" 1 3
-# 9 "C:\\Program Files\\Microchip\\xc8\\v2.30\\pic\\include\\c99\\conio.h" 2 3
-
-
-
-extern void init_uart(void);
-
-extern char getch(void);
-extern char getche(void);
-extern void putch(char);
-extern void ungetch(char);
-
-extern __bit kbhit(void);
-
-
-
-extern char * cgets(char *);
-extern void cputs(const char *);
-# 54 "./mcc_generated_files/mcc.h" 2
-# 69 "./mcc_generated_files/mcc.h"
-void SYSTEM_Initialize(void);
-# 82 "./mcc_generated_files/mcc.h"
-void OSCILLATOR_Initialize(void);
-# 94 "./mcc_generated_files/mcc.h"
-void WDT_Initialize(void);
-# 2 "main.c" 2
-
-
+void i2c_wait();
+void i2c_start();
+void i2c_stop();
+void i2c_repeated_start();
+void i2c_write(uint8_t data);
+uint8_t i2c_read(uint8_t ack);
+# 2 "PCA9685.c" 2
 
 # 1 "./PCA9685.h" 1
 
@@ -4407,59 +4362,46 @@ void set_pwm(uint8_t num, uint16_t on, uint16_t off);
 uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
 
 void servo_write(uint8_t ch, uint16_t ang);
-# 5 "main.c" 2
+# 3 "PCA9685.c" 2
+# 16 "PCA9685.c"
+void _write(uint8_t addr, uint8_t d){
+    i2c_start();
+    i2c_write(0x80);
+    i2c_write(addr);
+    i2c_write(d);
+    i2c_stop();
+}
 
 
 
 
-void send(unsigned char data);
 
-uint16_t ch1_ang;
+uint8_t _read(uint8_t addr){
+    uint8_t data;
+    i2c_start();
+    i2c_write(0x80);
+    i2c_write(addr);
 
-void main(void)
-{
+    i2c_repeated_start();
 
-    SYSTEM_Initialize();
+    i2c_write(0x80 | 0x01);
+    data = i2c_read(0x0 | 0x01);
+    i2c_stop();
 
-    ANSELB = 0x0;
-
-
-    TRISB = 0x02;
-
-
-    WPUB = 0x24;
-
-
-
-    TXSTA = 0x02;
-
-    RCSTA = 0x90;
-
-    BAUDCON = 0x08;
-
-    SPBRG = 51;
+    return data;
+}
 
 
 
-    PIR1bits.RCIF = 0;
 
+void init(){
+    i2c_start();
+    i2c_write(0x80);
 
-    PIE1bits.RCIE = 1;
-    PEIE = 1;
-    GIE = 1;
+    i2c_write(0x0);
+    i2c_write(0x0);
 
-
-
-    _delay((unsigned long)((500)*(8000000/4000.0)));
-    init();
-
-    set_pwm_freq(50);
-
-    ch1_ang = 0;
-
-    while (1)
-    {
-    }
+    i2c_stop();
 }
 
 
@@ -4467,30 +4409,49 @@ void main(void)
 
 
 
-void send(unsigned char data){
-    while(!TXSTAbits.TRMT);
-    TXREG = data;
+
+void set_pwm(uint8_t num, uint16_t on, uint16_t off){
+    i2c_start();
+    i2c_write(0x80);
+    i2c_write(0x06 + 4 * num);
+    i2c_write(on);
+    i2c_write(on >> 8);
+    i2c_write(off);
+    i2c_write(off >> 8);
+    i2c_stop();
 }
 
 
 
 
-void __attribute__((picinterrupt(("")))) isr(void){
-    if(PIR1bits.RCIF){
 
-        PIR1bits.RCIF = 0;
+void set_pwm_freq(uint16_t freq){
+    uint16_t prescaleval = 6103;
+    prescaleval /= freq;
+    prescaleval -= 1;
 
-        if((RCSTAbits.OERR) || (RCSTAbits.FERR)){
-            RCSTA = 0;
-            RCSTA = 0x90;
-        }else{
+    uint8_t prescale = (uint8_t)prescaleval;
+    uint8_t oldreg = _read(0x0);
+    uint8_t newreg = (oldreg & 0x7F) | 0x10;
+    _write(0x0, newreg);
+    _write(0xFE, prescale);
+    _write(0x0, oldreg);
+    _delay((unsigned long)((5)*(8000000/4000.0)));
+    _write(0x0, oldreg | 0xA1);
 
-            uint8_t data = RCREG;
-            send(data);
-            if(data > 0 && data < 180){
-                ch1_ang = data;
-                servo_write(0, ch1_ang);
-            }
-        }
-    }
+}
+
+
+uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max){
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+
+
+
+
+
+void servo_write(uint8_t ch, uint16_t ang){
+    ang = map(ang, 0, 180, 150, 500);
+    set_pwm(ch, 0, ang);
 }
