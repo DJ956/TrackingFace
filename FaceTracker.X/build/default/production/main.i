@@ -1,17 +1,17 @@
 
 # 1 "main.c"
 
-# 18 "C:\Program Files\Microchip\xc8\v2.30\pic\include\xc.h"
+# 18 "C:\Program Files\Microchip\xc8\v2.32\pic\include\xc.h"
 extern const char __xc8_OPTIM_SPEED;
 
 extern double __fpnormalize(double);
 
 
-# 13 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\xc8debug.h"
+# 13 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\xc8debug.h"
 #pragma intrinsic(__builtin_software_breakpoint)
 extern void __builtin_software_breakpoint(void);
 
-# 13 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\stdint.h"
+# 13 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\stdint.h"
 typedef signed char int8_t;
 
 # 20
@@ -98,7 +98,7 @@ typedef int16_t intptr_t;
 typedef uint16_t uintptr_t;
 
 
-# 7 "C:\Program Files\Microchip\xc8\v2.30\pic\include\builtins.h"
+# 7 "C:\Program Files\Microchip\xc8\v2.32\pic\include\builtins.h"
 #pragma intrinsic(__nop)
 extern void __nop(void);
 
@@ -111,7 +111,7 @@ extern __nonreentrant void _delaywdt(uint32_t);
 #pragma intrinsic(_delay3)
 extern __nonreentrant void _delay3(uint8_t);
 
-# 53 "C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1938.h"
+# 53 "C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1938.h"
 extern volatile unsigned char INDF0 __at(0x000);
 
 asm("INDF0 equ 00h");
@@ -4888,18 +4888,18 @@ extern volatile __bit nTO __at(0x1C);
 
 extern volatile __bit nWPUEN __at(0x4AF);
 
-# 76 "C:\Program Files\Microchip\xc8\v2.30\pic\include\pic.h"
+# 76 "C:\Program Files\Microchip\xc8\v2.32\pic\include\pic.h"
 __attribute__((__unsupported__("The " "FLASH_READ" " macro function is no longer supported. Please use the MPLAB X MCC."))) unsigned char __flash_read(unsigned short addr);
 
 __attribute__((__unsupported__("The " "FLASH_WRITE" " macro function is no longer supported. Please use the MPLAB X MCC."))) void __flash_write(unsigned short addr, unsigned short data);
 
 __attribute__((__unsupported__("The " "FLASH_ERASE" " macro function is no longer supported. Please use the MPLAB X MCC."))) void __flash_erase(unsigned short addr);
 
-# 114 "C:\Program Files\Microchip\xc8\v2.30\pic\include\eeprom_routines.h"
+# 114 "C:\Program Files\Microchip\xc8\v2.32\pic\include\eeprom_routines.h"
 extern void eeprom_write(unsigned char addr, unsigned char value);
 extern unsigned char eeprom_read(unsigned char addr);
 
-# 127 "C:\Program Files\Microchip\xc8\v2.30\pic\include\pic.h"
+# 127 "C:\Program Files\Microchip\xc8\v2.32\pic\include\pic.h"
 extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
@@ -4910,13 +4910,13 @@ void PIN_MANAGER_Initialize (void);
 # 90
 void PIN_MANAGER_IOC(void);
 
-# 15 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\stdbool.h"
+# 15 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\stdbool.h"
 typedef unsigned char bool;
 
-# 29 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\errno.h"
+# 29 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\errno.h"
 extern int errno;
 
-# 12 "C:\Program Files\Microchip\xc8\v2.30\pic\include\c90\conio.h"
+# 12 "C:\Program Files\Microchip\xc8\v2.32\pic\include\c90\conio.h"
 extern void init_uart(void);
 
 extern char getch(void);
@@ -4956,6 +4956,8 @@ void send(unsigned char data);
 
 uint16_t ch1_ang;
 
+uint8_t flg;
+
 void main(void)
 {
 
@@ -4965,9 +4967,25 @@ ANSELA = 0x0;
 ANSELB = 0x0;
 
 
-TRISC = 0x4C;
+TRISA = 0x0;
+LATA = 0x0;
 
-# 29
+
+
+
+SSPADD = 0x13;
+SSPCON1 = 0x28;
+SSPCON2 = 0x0;
+SSPSTAT = 0;
+
+
+_delay((unsigned long)((500)*(8000000/4000.0)));
+init();
+
+set_pwm_freq(50);
+
+
+
 TXSTA = 0x02;
 
 RCSTA = 0x90;
@@ -4985,27 +5003,20 @@ PIE1bits.RCIE = 1;
 PEIE = 1;
 GIE = 1;
 
-
-
-_delay((unsigned long)((500)*(8000000/4000.0)));
-init();
-
-set_pwm_freq(50);
-
 ch1_ang = 0;
-
+flg = 1;
 while (1)
 {
 }
 }
 
-# 65
+# 72
 void send(unsigned char data){
 while(!TXSTAbits.TRMT);
 TXREG = data;
 }
 
-# 73
+# 80
 void __interrupt() isr(void){
 if(PIR1bits.RCIF){
 
@@ -5016,9 +5027,17 @@ RCSTA = 0;
 RCSTA = 0x90;
 }else{
 
+if(flg){
+LATA = 0x01;
+flg = 0;
+}else{
+LATA = 0x0;
+flg = 1;
+}
+
 uint8_t data = RCREG;
 send(data);
-if(data > 0 && data < 180){
+if(data >= 0 && data <= 180){
 ch1_ang = data;
 servo_write(0, ch1_ang);
 }

@@ -10,6 +10,8 @@ void send(unsigned char data);
 
 uint16_t ch1_ang;
 
+uint8_t flg;
+
 void main(void)
 {
     // initialize the device
@@ -17,12 +19,24 @@ void main(void)
 
     ANSELA = 0x0;
     ANSELB = 0x0;
-    
-    //RX(RC7),SDA(RC4),SCL(RC3) pin set input mode(USART)
-    TRISC = 0x4C;
-    
+
+    //LED    
+    TRISA = 0x0;
+    LATA = 0x0;
+
     //SDA(RC4),SCL(RC3) set pull up(i2c)
     
+    //i2c setting
+    SSPADD = 0x13;
+    SSPCON1 = 0x28;
+    SSPCON2 = 0x0;
+    SSPSTAT = 0;
+    
+     //set PCA9685 setting
+    __delay_ms(500);
+    init();
+    
+    set_pwm_freq(50);
     
     //USART setting
     //TX on
@@ -43,17 +57,10 @@ void main(void)
     PEIE = 1;
     GIE = 1;
 
-    
-    //set PCA9685 setting
-    __delay_ms(500);
-    init();
-    
-    set_pwm_freq(50);
-    
     ch1_ang = 0;
-    
+    flg = 1;
     while (1)
-    {           
+    {
     }
 }
 
@@ -80,9 +87,17 @@ void __interrupt() isr(void){
             RCSTA = 0x90;
         }else{
         //not error
+            if(flg){
+                LATA = 0x01;
+                flg = 0;
+            }else{
+                LATA = 0x0;
+                flg = 1;
+            }
+            
             uint8_t data = RCREG;
             send(data);
-            if(data > 0 && data < 180){
+            if(data >= 0 && data <= 180){
                 ch1_ang = data;
                 servo_write(SERVO_CH, ch1_ang);
             }                                 

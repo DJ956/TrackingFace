@@ -5,7 +5,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _OSCILLATOR_Initialize `(v ~T0 @X0 0 ef ]
 "94
 [v _WDT_Initialize `(v ~T0 @X0 0 ef ]
-"1852 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1938.h
+"1852 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1938.h
 [v _OSCCON `Vuc ~T0 @X0 0 e@153 ]
 "1794
 [v _OSCTUNE `Vuc ~T0 @X0 0 e@152 ]
@@ -49,7 +49,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;builtins.h: 14: extern __nonreentrant void _delaywdt(uint32_t);
 [; ;builtins.h: 17: extern __nonreentrant void _delay3(uint8_t);
 [; ;pic16f1938.h: 53: extern volatile unsigned char INDF0 __at(0x000);
-"55 C:\Program Files\Microchip\xc8\v2.30\pic\include\proc\pic16f1938.h
+"55 C:\Program Files\Microchip\xc8\v2.32\pic\include\proc\pic16f1938.h
 [; ;pic16f1938.h: 55: asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
 [; ;pic16f1938.h: 58: typedef union {
