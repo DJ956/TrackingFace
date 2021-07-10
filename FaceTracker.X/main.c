@@ -4,11 +4,11 @@
 #include <xc.h>
 #include "PCA9685.h"
 
-#define SERVO_CH 0
+#define DATA_MIN 0
+#define DATA_MAX 90
 
 void send(unsigned char data);
-
-uint16_t ch1_ang;
+void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang);
 
 uint8_t flg;
 
@@ -57,11 +57,9 @@ void main(void)
     PEIE = 1;
     GIE = 1;
 
-    ch1_ang = 0;
     flg = 1;
-    while (1)
-    {
-    }
+    
+    while (1){}
 }
 
 
@@ -72,6 +70,22 @@ void main(void)
 void send(unsigned char data){
     while(!TXSTAbits.TRMT);
     TXREG = data;
+}
+
+/**
+ * 8th bit 0: servo 0channel, 1:servo 1channel
+ * 7~0th angle range(0~90) 
+ * @param data USART recived data
+ * @param ch servo channel
+ * @param ang servo angle
+ */
+void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang){
+    const uint8_t mask = 0x80;
+    //detect servo channel    
+    (*ch) = (mask & data) ? 1 : 0;
+    
+    data = data & ~mask;
+    (*ang) = data * 2;
 }
 
 /**
@@ -97,9 +111,11 @@ void __interrupt() isr(void){
             
             uint8_t data = RCREG;
             send(data);
-            if(data >= 0 && data <= 180){
-                ch1_ang = data;
-                servo_write(SERVO_CH, ch1_ang);
+            if(data >= DATA_MIN && data <= DATA_MAX){
+                uint8_t ch;
+                uint8_t ang;
+                recieve_ang(data, &ch, &ang);
+                servo_write(ch, ang);
             }                                 
         }
     }

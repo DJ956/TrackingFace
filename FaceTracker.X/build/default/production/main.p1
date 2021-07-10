@@ -3138,11 +3138,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;PCA9685.h: 13: void set_pwm(uint8_t num, uint16_t on, uint16_t off);
 [; ;PCA9685.h: 15: uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
 [; ;PCA9685.h: 17: void servo_write(uint8_t ch, uint16_t ang);
-[; ;main.c: 9: void send(unsigned char data);
-"11 main.c
-[v _ch1_ang `ui ~T0 @X0 1 e ]
-[; ;main.c: 11: uint16_t ch1_ang;
-"13
+[; ;main.c: 10: void send(unsigned char data);
+[; ;main.c: 11: void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang);
+"13 main.c
 [v _flg `uc ~T0 @X0 1 e ]
 [; ;main.c: 13: uint8_t flg;
 [v $root$_main `(v ~T0 @X0 0 e ]
@@ -3214,136 +3212,162 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;main.c: 58: GIE = 1;
 "58
 [e = _GIE -> -> 1 `i `b ]
-[; ;main.c: 60: ch1_ang = 0;
+[; ;main.c: 60: flg = 1;
 "60
-[e = _ch1_ang -> -> 0 `i `ui ]
-[; ;main.c: 61: flg = 1;
-"61
 [e = _flg -> -> 1 `i `uc ]
-[; ;main.c: 62: while (1)
+[; ;main.c: 62: while (1){}
 "62
 [e :U 353 ]
-[; ;main.c: 63: {
-"63
 {
-"64
 }
 [e :U 352 ]
-"62
 [e $U 353  ]
 [e :U 354 ]
-[; ;main.c: 64: }
-[; ;main.c: 65: }
-"65
+[; ;main.c: 63: }
+"63
 [e :UE 351 ]
 }
-"72
+"70
 [v _send `(v ~T0 @X0 1 ef1`uc ]
 {
-[; ;main.c: 72: void send(unsigned char data){
+[; ;main.c: 70: void send(unsigned char data){
 [e :U _send ]
 [v _data `uc ~T0 @X0 1 r1 ]
 [f ]
-[; ;main.c: 73: while(!TXSTAbits.TRMT);
-"73
+[; ;main.c: 71: while(!TXSTAbits.TRMT);
+"71
 [e $U 356  ]
 [e :U 357 ]
 [e :U 356 ]
 [e $ ! != -> . . _TXSTAbits 0 1 `i -> -> -> 0 `i `Vuc `i 357  ]
 [e :U 358 ]
-[; ;main.c: 74: TXREG = data;
-"74
+[; ;main.c: 72: TXREG = data;
+"72
 [e = _TXREG _data ]
-[; ;main.c: 75: }
-"75
+[; ;main.c: 73: }
+"73
 [e :UE 355 ]
 }
+"82
+[v _recieve_ang `(v ~T0 @X0 1 ef3`uc`*uc`*uc ]
+{
+[; ;main.c: 82: void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang){
+[e :U _recieve_ang ]
+[v _data `uc ~T0 @X0 1 r1 ]
+[v _ch `*uc ~T0 @X0 1 r2 ]
+[v _ang `*uc ~T0 @X0 1 r3 ]
+[f ]
+"83
+[v F2623 `Cuc ~T0 @X0 1 s mask ]
+[i F2623
+-> -> 128 `i `uc
+]
+[; ;main.c: 83: const uint8_t mask = 0x80;
+[; ;main.c: 85: (*ch) = (mask & data) ? 1 : 0;
+"85
+[e = *U _ch -> ? != & -> F2623 `i -> _data `i -> 0 `i : -> 1 `i -> 0 `i `uc ]
+[; ;main.c: 87: data = data & ~mask;
+"87
+[e = _data -> & -> _data `i ~ -> F2623 `i `uc ]
+[; ;main.c: 88: (*ang) = data * 2;
+"88
+[e = *U _ang -> * -> _data `i -> 2 `i `uc ]
+[; ;main.c: 89: }
+"89
+[e :UE 359 ]
+}
 [v $root$_isr `(v ~T0 @X0 0 e ]
-"80
+"94
 [v _isr `(v ~T4 @X0 1 ef ]
 {
-[; ;main.c: 80: void __interrupt() isr(void){
+[; ;main.c: 94: void __interrupt() isr(void){
 [e :U _isr ]
 [f ]
-[; ;main.c: 81: if(PIR1bits.RCIF){
-"81
-[e $ ! != -> . . _PIR1bits 0 5 `i -> -> -> 0 `i `Vuc `i 360  ]
-{
-[; ;main.c: 83: PIR1bits.RCIF = 0;
-"83
-[e = . . _PIR1bits 0 5 -> -> 0 `i `uc ]
-[; ;main.c: 85: if((RCSTAbits.OERR) || (RCSTAbits.FERR)){
-"85
-[e $ ! || != -> . . _RCSTAbits 0 1 `i -> -> -> 0 `i `Vuc `i != -> . . _RCSTAbits 0 2 `i -> -> -> 0 `i `Vuc `i 361  ]
-{
-[; ;main.c: 86: RCSTA = 0;
-"86
-[e = _RCSTA -> -> 0 `i `uc ]
-[; ;main.c: 87: RCSTA = 0x90;
-"87
-[e = _RCSTA -> -> 144 `i `uc ]
-"88
-}
-[; ;main.c: 88: }else{
-[e $U 362  ]
-[e :U 361 ]
-{
-[; ;main.c: 90: if(flg){
-"90
-[e $ ! != -> _flg `i -> -> -> 0 `i `uc `i 363  ]
-{
-[; ;main.c: 91: LATA = 0x01;
-"91
-[e = _LATA -> -> 1 `i `uc ]
-[; ;main.c: 92: flg = 0;
-"92
-[e = _flg -> -> 0 `i `uc ]
-"93
-}
-[; ;main.c: 93: }else{
-[e $U 364  ]
-[e :U 363 ]
-{
-[; ;main.c: 94: LATA = 0x0;
-"94
-[e = _LATA -> -> 0 `i `uc ]
-[; ;main.c: 95: flg = 1;
+[; ;main.c: 95: if(PIR1bits.RCIF){
 "95
-[e = _flg -> -> 1 `i `uc ]
-"96
-}
-[e :U 364 ]
-"98
-[v _data `uc ~T0 @X0 1 a ]
-[; ;main.c: 96: }
-[; ;main.c: 98: uint8_t data = RCREG;
-[e = _data _RCREG ]
-[; ;main.c: 99: send(data);
-"99
-[e ( _send (1 _data ]
-[; ;main.c: 100: if(data >= 0 && data <= 180){
-"100
-[e $ ! && >= -> _data `i -> 0 `i <= -> _data `i -> 180 `i 365  ]
+[e $ ! != -> . . _PIR1bits 0 5 `i -> -> -> 0 `i `Vuc `i 361  ]
 {
-[; ;main.c: 101: ch1_ang = data;
+[; ;main.c: 97: PIR1bits.RCIF = 0;
+"97
+[e = . . _PIR1bits 0 5 -> -> 0 `i `uc ]
+[; ;main.c: 99: if((RCSTAbits.OERR) || (RCSTAbits.FERR)){
+"99
+[e $ ! || != -> . . _RCSTAbits 0 1 `i -> -> -> 0 `i `Vuc `i != -> . . _RCSTAbits 0 2 `i -> -> -> 0 `i `Vuc `i 362  ]
+{
+[; ;main.c: 100: RCSTA = 0;
+"100
+[e = _RCSTA -> -> 0 `i `uc ]
+[; ;main.c: 101: RCSTA = 0x90;
 "101
-[e = _ch1_ang -> _data `ui ]
-[; ;main.c: 102: servo_write(0, ch1_ang);
+[e = _RCSTA -> -> 144 `i `uc ]
 "102
-[e ( _servo_write (2 , -> -> 0 `i `uc _ch1_ang ]
-"103
+}
+[; ;main.c: 102: }else{
+[e $U 363  ]
+[e :U 362 ]
+{
+[; ;main.c: 104: if(flg){
+"104
+[e $ ! != -> _flg `i -> -> -> 0 `i `uc `i 364  ]
+{
+[; ;main.c: 105: LATA = 0x01;
+"105
+[e = _LATA -> -> 1 `i `uc ]
+[; ;main.c: 106: flg = 0;
+"106
+[e = _flg -> -> 0 `i `uc ]
+"107
+}
+[; ;main.c: 107: }else{
+[e $U 365  ]
+[e :U 364 ]
+{
+[; ;main.c: 108: LATA = 0x0;
+"108
+[e = _LATA -> -> 0 `i `uc ]
+[; ;main.c: 109: flg = 1;
+"109
+[e = _flg -> -> 1 `i `uc ]
+"110
 }
 [e :U 365 ]
-"104
+"112
+[v _data `uc ~T0 @X0 1 a ]
+[; ;main.c: 110: }
+[; ;main.c: 112: uint8_t data = RCREG;
+[e = _data _RCREG ]
+[; ;main.c: 113: send(data);
+"113
+[e ( _send (1 _data ]
+[; ;main.c: 114: if(data >= 0 && data <= 90){
+"114
+[e $ ! && >= -> _data `i -> 0 `i <= -> _data `i -> 90 `i 366  ]
+{
+"115
+[v _ch `uc ~T0 @X0 1 a ]
+"116
+[v _ang `uc ~T0 @X0 1 a ]
+[; ;main.c: 115: uint8_t ch;
+[; ;main.c: 116: uint8_t ang;
+[; ;main.c: 117: recieve_ang(data, &ch, &ang);
+"117
+[e ( _recieve_ang (3 , , _data &U _ch &U _ang ]
+[; ;main.c: 118: servo_write(ch, ang);
+"118
+[e ( _servo_write (2 , _ch -> _ang `ui ]
+"119
 }
-[e :U 362 ]
-"105
+[e :U 366 ]
+"120
 }
-[e :U 360 ]
-[; ;main.c: 103: }
-[; ;main.c: 104: }
-[; ;main.c: 105: }
-[; ;main.c: 106: }
-"106
-[e :UE 359 ]
+[e :U 363 ]
+"121
+}
+[e :U 361 ]
+[; ;main.c: 119: }
+[; ;main.c: 120: }
+[; ;main.c: 121: }
+[; ;main.c: 122: }
+"122
+[e :UE 360 ]
 }

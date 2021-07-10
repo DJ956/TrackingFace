@@ -4951,10 +4951,9 @@ uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uin
 
 void servo_write(uint8_t ch, uint16_t ang);
 
-# 9 "main.c"
+# 10 "main.c"
 void send(unsigned char data);
-
-uint16_t ch1_ang;
+void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang);
 
 uint8_t flg;
 
@@ -5003,20 +5002,28 @@ PIE1bits.RCIE = 1;
 PEIE = 1;
 GIE = 1;
 
-ch1_ang = 0;
 flg = 1;
-while (1)
-{
-}
+
+while (1){}
 }
 
-# 72
+# 70
 void send(unsigned char data){
 while(!TXSTAbits.TRMT);
 TXREG = data;
 }
 
-# 80
+# 82
+void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang){
+const uint8_t mask = 0x80;
+
+(*ch) = (mask & data) ? 1 : 0;
+
+data = data & ~mask;
+(*ang) = data * 2;
+}
+
+# 94
 void __interrupt() isr(void){
 if(PIR1bits.RCIF){
 
@@ -5037,9 +5044,11 @@ flg = 1;
 
 uint8_t data = RCREG;
 send(data);
-if(data >= 0 && data <= 180){
-ch1_ang = data;
-servo_write(0, ch1_ang);
+if(data >= 0 && data <= 90){
+uint8_t ch;
+uint8_t ang;
+recieve_ang(data, &ch, &ang);
+servo_write(ch, ang);
 }
 }
 }
