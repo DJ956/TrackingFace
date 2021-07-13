@@ -4982,6 +4982,7 @@ _delay((unsigned long)((500)*(8000000/4000.0)));
 init();
 
 set_pwm_freq(50);
+LATA = 0x01;
 
 
 
@@ -5004,16 +5005,18 @@ GIE = 1;
 
 flg = 1;
 
+_delay((unsigned long)((1000)*(8000000/4000.0)));
+LATA = 0x0;
 while (1){}
 }
 
-# 70
+# 73
 void send(unsigned char data){
 while(!TXSTAbits.TRMT);
 TXREG = data;
 }
 
-# 82
+# 85
 void recieve_ang(uint8_t data, uint8_t *ch, uint8_t *ang){
 const uint8_t mask = 0x80;
 
@@ -5023,7 +5026,7 @@ data = data & ~mask;
 (*ang) = data * 2;
 }
 
-# 94
+# 97
 void __interrupt() isr(void){
 if(PIR1bits.RCIF){
 
@@ -5044,12 +5047,11 @@ flg = 1;
 
 uint8_t data = RCREG;
 send(data);
-if(data >= 0 && data <= 90){
+
 uint8_t ch;
 uint8_t ang;
 recieve_ang(data, &ch, &ang);
 servo_write(ch, ang);
-}
 }
 }
 }

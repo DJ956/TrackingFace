@@ -37,6 +37,7 @@ void main(void)
     init();
     
     set_pwm_freq(50);
+    LATA = 0x01;
     
     //USART setting
     //TX on
@@ -59,6 +60,8 @@ void main(void)
 
     flg = 1;
     
+    __delay_ms(1000);
+    LATA = 0x0;
     while (1){}
 }
 
@@ -111,12 +114,11 @@ void __interrupt() isr(void){
             
             uint8_t data = RCREG;
             send(data);
-            if(data >= DATA_MIN && data <= DATA_MAX){
-                uint8_t ch;
-                uint8_t ang;
-                recieve_ang(data, &ch, &ang);
-                servo_write(ch, ang);
-            }                                 
+            
+            uint8_t ch;
+            uint8_t ang;
+            recieve_ang(data, &ch, &ang);
+            servo_write(ch, ang);                          
         }
     }
 }
